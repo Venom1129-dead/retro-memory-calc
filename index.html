@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroMemory Hex & CWCheat Address Calculator — RE AI Modder Toolkit</title>
+  <meta name="description" content="Instant client-side RAM pointer offset calculator, Little/Big Endian byte swapper, and CWCheat syntax generator for PPSSPP, PCSX2, and RetroArch.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="logo">
+        <span class="cyber-accent">RE//AI</span>
+        <h1>RetroMemory Hex & CWCheat Calculator</h1>
+      </div>
+      <p class="subtitle">Client-Side Pointer Arithmetic, Endianness Converter & Emulator Patch Generator</p>
+      
+      <!-- Preset Selectors -->
+      <div class="preset-bar">
+        <span class="preset-label">Platform Presets:</span>
+        <button class="preset-btn active" data-base="0x08800000" data-name="PSP (PPSSPP User RAM)">PSP (PPSSPP)</button>
+        <button class="preset-btn" data-base="0x80000000" data-name="GameCube / Wii (Dolphin MEM1)">GameCube / Wii</button>
+        <button class="preset-btn" data-base="0x00000000" data-name="PS2 (PCSX2 Main EE)">PS2 (PCSX2)</button>
+        <button class="preset-btn" data-base="0x02000000" data-name="GBA (mGBA EWRAM)">GBA (mGBA)</button>
+      </div>
+    </header>
+
+    <main class="grid-container">
+      <!-- Section 1: Pointer & Offset Calculator -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">⚡</span>
+          <h2>Pointer & Offset Arithmetic</h2>
+        </div>
+        
+        <div class="input-group">
+          <label for="baseAddress">Base RAM Address (Hex):</label>
+          <input type="text" id="baseAddress" value="0x08800000" placeholder="e.g. 0x08800000">
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="offsetAddress">Pointer Offset:</label>
+            <input type="text" id="offsetAddress" value="0x00045A20" placeholder="e.g. 0x45A20 or +2048">
+          </div>
+          <div class="input-group">
+            <label for="mathOp">Operation:</label>
+            <select id="mathOp">
+              <option value="add">Add (+)</option>
+              <option value="sub">Subtract (-)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="result-box">
+          <div class="res-item">
+            <span class="res-label">Absolute Virtual Address:</span>
+            <span id="resAbsoluteHex" class="res-val cyan">0x08845A20</span>
+          </div>
+          <div class="res-item">
+            <span class="res-label">Decimal Value:</span>
+            <span id="resDecimal" class="res-val">142,891,552</span>
+          </div>
+          <div class="res-item">
+            <span class="res-label">CWCheat Relative Offset:</span>
+            <span id="resCwRelative" class="res-val gold">0x00045A20</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Endianness Byte Swapper -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">🔄</span>
+          <h2>Endianness Byte Swapper</h2>
+        </div>
+
+        <div class="input-group">
+          <label for="endianInput">Input Hex String (Value or Address):</label>
+          <input type="text" id="endianInput" value="12345678" placeholder="e.g. 12345678 or 0xDEADBEEF">
+        </div>
+
+        <div class="input-group">
+          <label for="endianWidth">Word Width:</label>
+          <select id="endianWidth">
+            <option value="32">32-Bit (4 Bytes - Standard Dword)</option>
+            <option value="16">16-Bit (2 Bytes - Word)</option>
+            <option value="64">64-Bit (8 Bytes - Qword)</option>
+          </select>
+        </div>
+
+        <div class="result-box">
+          <div class="res-item">
+            <span class="res-label">Big-Endian (Motorola / Network):</span>
+            <span id="resBigEndian" class="res-val">0x12345678</span>
+          </div>
+          <div class="res-item">
+            <span class="res-label">Little-Endian (x86 / MIPS / ARM):</span>
+            <span id="resLittleEndian" class="res-val cyan">0x78563412</span>
+          </div>
+          <div class="res-item">
+            <span class="res-label">Byte Sequence:</span>
+            <span id="resByteSequence" class="res-val gold">78 56 34 12</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: CWCheat / Action Replay Syntax Generator -->
+      <section class="card full-width">
+        <div class="card-header">
+          <span class="card-icon">📝</span>
+          <h2>CWCheat / Action Replay Syntax Generator</h2>
+        </div>
+
+        <div class="cheat-inputs-grid">
+          <div class="input-group">
+            <label for="cheatName">Cheat Description / Name:</label>
+            <input type="text" id="cheatName" value="Infinite Health / Ammo" placeholder="e.g. Max Gold">
+          </div>
+          <div class="input-group">
+            <label for="cheatAddress">Target Relative RAM Address:</label>
+            <input type="text" id="cheatAddress" value="0x00045A20" placeholder="e.g. 0x00045A20">
+          </div>
+          <div class="input-group">
+            <label for="cheatType">Write Type / Size:</label>
+            <select id="cheatType">
+              <option value="2">32-Bit Write (Type 0x2 - 4 Bytes)</option>
+              <option value="1">16-Bit Write (Type 0x1 - 2 Bytes)</option>
+              <option value="0">8-Bit Write (Type 0x0 - 1 Byte)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="cheatValue">New Value (Hex or Dec):</label>
+            <input type="text" id="cheatValue" value="0x000003E7" placeholder="e.g. 0x3E7 or 999">
+          </div>
+        </div>
+
+        <div class="code-preview-wrapper">
+          <div class="code-header">
+            <span>Standard CWCheat / PPSSPP Format</span>
+            <button id="copyCheatBtn" class="copy-btn">📋 Copy Code</button>
+          </div>
+          <pre id="cheatOutput" class="code-output">_C0 Infinite Health / Ammo
+_L 0x20045A20 0x000003E7</pre>
+        </div>
+      </section>
+    </main>
+
+    <!-- Monetization CTA Banner -->
+    <footer class="app-footer">
+      <div class="cta-card">
+        <div class="cta-info">
+          <span class="pill-badge">MODDER PRO TOOLKIT</span>
+          <h3>Want the complete Reverse Engineering & Emulator Cheat Vault?</h3>
+          <p>Get 250+ documented memory maps for PSP/PS2 titles, pointer-scanner scripts, and our binary pattern scanner guide.</p>
+        </div>
+        <div class="cta-action">
+          <a href="https://gumroad.com" target="_blank" rel="noopener noreferrer" class="cta-buy-btn">
+            Get Modder Vault — $9
+          </a>
+          <span class="subtext">Instant ZIP Download • 100% Free Updates</span>
+        </div>
+      </div>
+      <p class="copyright">RE//AI RetroMemory Toolkit • Autonomous Income Factory Asset #11</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
